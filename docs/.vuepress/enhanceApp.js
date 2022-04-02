@@ -10,13 +10,13 @@ export default ({
     store
 }) => {
   Vue.use(ElementUI);
-  
+  /*
   Vue.use(VueGtm, {
     id: 'GTM-WH8HSHK', // Your GTM single container ID or array of container ids ['GTM-xxxxxxx', 'GTM-yyyyyyy']
     enabled: true, // defaults to true. Plugin can be disabled by setting this to false for Ex: enabled: !!GDPR_Cookie (optional)
     debug: true, // Whether or not display console logs debugs (optional)
     loadScript: true, // Whether or not to load the GTM Script (Helpful if you are including GTM manually, but need the dataLayer functionality in your components) (optional) 
-  });
+  });*/
   
   if (window.performance) {
     // Gets the number of milliseconds since page load
@@ -31,6 +31,52 @@ export default ({
       'event_category': 'JS Dependencies'
     });*/
     //ga('send', 'timing', 'JS Dependencies', 'load', timeSincePageLoad);
+  }
+  function logEvent(name, params) {
+    if (!name) {
+      return;
+    }
+  
+    if (window.AnalyticsWebInterface) {
+      // Call Android interface
+      window.AnalyticsWebInterface.logEvent(name, JSON.stringify(params));
+    } else if (window.webkit
+        && window.webkit.messageHandlers
+        && window.webkit.messageHandlers.firebase) {
+      // Call iOS interface
+      var message = {
+        command: 'logEvent',
+        name: name,
+        parameters: params
+      };
+      window.webkit.messageHandlers.firebase.postMessage(message);
+    } else {
+      // No Android or iOS interface found
+      console.log("No native APIs found.");
+    }
+  }
+  function setUserProperty(name, value) {
+    if (!name || !value) {
+      return;
+    }
+  
+    if (window.AnalyticsWebInterface) {
+      // Call Android interface
+      window.AnalyticsWebInterface.setUserProperty(name, value);
+    } else if (window.webkit
+        && window.webkit.messageHandlers
+        && window.webkit.messageHandlers.firebase) {
+      // Call iOS interface
+      var message = {
+        command: 'setUserProperty',
+        name: name,
+        value: value
+     };
+      window.webkit.messageHandlers.firebase.postMessage(message);
+    } else {
+      // No Android or iOS interface found
+      console.log("No native APIs found.");
+    }
   }
 
   router.afterEach((to, from) => {
@@ -51,5 +97,11 @@ export default ({
       'pagePath': to.path, // 新页面的页面Path
       'pageName': to.name // 新页面的页面Title
     });*/
+    if(logEvent) {
+      logEvent("screen_view",{
+        "screen_class": "test_class",
+        "screen_name": to.name
+      });
+    }
   });
 }

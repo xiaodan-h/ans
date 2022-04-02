@@ -8,6 +8,22 @@ module.exports = {
     ['meta', { 'http-quiv': 'pragma', cotent: 'no-cache'}],
     ['meta', { 'http-quiv': 'pragma', cotent: 'no-cache,must-revalidate'}],
     ['meta', { 'http-quiv': 'expires', cotent: '0'}],
+    ['script', {}, `
+    function getQueryString(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return unescape(r[2]); return null;
+    }
+    window.dataLayer=[{
+      "clientID": getQueryString('app_instanced_id')? getQueryString('app_instanced_id'):""
+    }];
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-WH8HSHK');
+    `
+  ] 
     /*['script', {}, `
       var _hmt = _hmt || [];
       window._hmt = _hmt;
@@ -28,21 +44,6 @@ module.exports = {
         'user_id': 'USER_ID_003'
       });`
     ]*/
-    /*['script', {}, `
-    (function (i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r
-      i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-      }
-      i[r].l = 1 * new Date()
-      a = s.createElement(o)
-      m = s.getElementsByTagName(o)[0]
-      a.async = 1
-      a.src = g
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga')
-      ga('create', 'UA-166137413-1', 'auto');`
-    ]*/
   ],
   serviceWorker: true, // 是否开启 PWA
   base: '/', // 部署到github相关的配置
@@ -61,7 +62,7 @@ module.exports = {
       },
       { text: 'GA', link: '/ga/' },
       { text: '碎言碎语', link: '/others/' },
-      { text: '测试', link: 'https://www.eufylife.com/de/products/602/haushaltsgerate?utm_source=test&utm_medium=test&utm_campaign=test&utm_content=sparkx_index_ig_dog-image' }    
+      { text: '测试', link: 'https://oppostoreid.page.link/?apn=com.heytap.mall&ofl=https://www.oppo.com/id/online-store/&link=https%3A%2F%2Foppostoreid.page.link%2F%3Furi%3Dcom.heytap.mall.action.web%26data%3Dhttps%3A%2F%2Fwww.oppo.com%2Fid%2Fonline-store%2F' }    
     ],
     sidebar: 'auto', // 侧边栏配置
     sidebarDepth: 2
